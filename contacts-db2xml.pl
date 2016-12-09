@@ -38,10 +38,12 @@ for my $letter ('A' .. 'Z') {
 my $generator = XML::Generator->new(':pretty');
 
 # Read the contacts' first and last name from the database
+print("Getting contacts from the database...\n");
 my $dbh = DBI->connect("dbi:ODBC:DSN=AdventureWorks") or die(DBI->errstr);
 my $sth = $dbh->prepare($select) or die($dbh->errstr);
 $sth->execute() or die($sth->errstr);
 
+print("Processing records...\n");
 # Loop over each record from the database.
 while (my $row_ref = $sth->fetchrow_arrayref) {
   # Get the first and last names from the row
@@ -60,10 +62,12 @@ while (my $row_ref = $sth->fetchrow_arrayref) {
   }));
 }
 
+print("Writing files...\n");
 # For each letter/list pair in the hash
 while (my ($initial, $contact_ref) = each(%$contacts_ref)) {
   # If there are no entries in the list, just skip it
   next unless scalar(@$contact_ref);
+  print("\t./output/$initial.xml\n");
 
   # Open a file based on that letter
   open(my $fh, '>', "output/$initial.xml");
